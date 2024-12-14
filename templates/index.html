@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cómo hacer unas Tabs con HTML, CSS y JS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='templates\css\app.css') }}">
+
+    <link rel="stylesheet" href="css\app.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rancho&effect=shadow-multiple">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cantarell">
+    <script defer src="js/app.js" ></script>
+    <style>
+        @charset "UTF-8";
+/* Aquí definimos las Custom properties */
+:root {
+  --negro: #393939;
+  --blanco: #ececec;
+  --sombra-ppal: #c9c9c9;
+  --sombra-sec: #ffffff;
+  --borde-negro: #00000050;
+  --marcado: rgb(127, 195, 255);
+  /* Tipografía */
+  --tipo-principal: Helvetica, Arial, sans-serif;
+}
+
+/* Las adaptamos al modo oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --negro: #ececec;
+    --blanco: #303030;
+    --sombra-ppal: #242424;
+    --sombra-sec: #3c3c3c;
+    --borde-negro: #FFFFFF50;
+  }
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  vertical-align: baseline;
+}
+
+img, picture, video, iframe, figure {
+  margin-right: 1em;
+  margin-left: 1em;
+  max-width: 100%;
+  width: 100%;
+  display: block;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center center;
+     object-position: center center;
+}
+
+a {
+  display: block;
+}
+
+p a {
+  display: inline;
+}
+
+li {
+  list-style-type: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, strong, blockquote, i, b, u, em {
+  
+  font-weight: inherit;
+  font-style: inherit;
+  text-decoration: none;
+  color: inherit;
+}
+
+form, input, textarea, select, button, label {
+  font-family: inherit;
+  font-size: inherit;
+  -webkit-hyphens: auto;
+      -ms-hyphens: auto;
+          hyphens: auto;
+  background-color: transparent;
+  border-radius: 0.25em;
+  color: inherit;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+  content: "";
+  content: none;
+}
+
+::-moz-selection {
+  background-color: var(--negro);
+  color: var(--blanco);
+}
+
+::selection {
+  background-color: var(--negro);
+  color: var(--blanco);
+}
+
+table, tr, td {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+svg {
+  width: 100%;
+  display: block;
+  fill: currentColor;
+}
+
+body {
+  font-family: var(--tipo-principal);
+  font-size: 100%;
+  line-height: 1.4em;
+  min-height: 100vh;
+  background-color: var(--blanco);
+  color: var(--negro);
+  -webkit-hyphens: auto;
+      -ms-hyphens: auto;
+          hyphens: auto;
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.contenedor_ppal {
+  width: 70%;
+  max-width: 150em;
+  padding: 1em;
+  margin: 1em;
+}
+
+.contenedor {
+  width: 90%;
+  max-width: 120em;
+  padding: 1em;
+  color: var(--negro);
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  border-radius: 0.5em;
+  background-color: var(--blanco);
+  -webkit-box-shadow: 0.3em 0.3em 0.6em var(--sombra-ppal), -0.3em -0.3em 0.6em var(--sombra-sec), inset 0 0 0 transparent, inset 0 0 0 transparent;
+          box-shadow: 0.3em 0.3em 0.6em var(--sombra-ppal), -0.3em -0.3em 0.6em var(--sombra-sec), inset 0 0 0 transparent, inset 0 0 0 transparent;
+}
+
+.contenedor .ul {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.contenedor .li {
+  display:flex;
+  width: 20em;
+  padding: 1em;
+  margin: 0 2em 0 0;
+  color: var(--negro);
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  border-radius: 0.5em;
+  background-color: var(--blanco);
+  -webkit-box-shadow: 0.3em 0.3em 0.6em var(--sombra-ppal), -0.3em -0.3em 0.6em var(--sombra-sec), inset 0 0 0 transparent, inset 0 0 0 transparent;
+          box-shadow: 0.3em 0.3em 0.6em var(--sombra-ppal), -0.3em -0.3em 0.6em var(--sombra-sec), inset 0 0 0 transparent, inset 0 0 0 transparent;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.contenedor .li.activo {
+  background-color: lightskyblue;
+  color: white;
+}
+
+.contenedor .subcontenedor {
+  min-height: 50vh;
+  position: relative;
+}
+
+.contenedor .bloque {
+  width: 98%;
+  height: 90%;
+  margin: 1em;
+  padding: 1em;
+  position: absolute;
+  
+  color: var(--negro);
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  border-radius: 0.5em;
+  background-color: var(--blanco);
+  -webkit-box-shadow: 0.3em 0.3em 0.6em var(--sombra-ppal), -0.3em -0.3em 0.6em var(--sombra-sec), inset 0 0 0 transparent, inset 0 0 0 transparent;
+          box-shadow: 0.3em 0.3em 0.6em var(--sombra-ppal), -0.3em -0.3em 0.6em var(--sombra-sec), inset 0 0 0 transparent, inset 0 0 0 transparent;
+  opacity: 0;
+  -webkit-transform: translateY(50%);
+          transform: translateY(50%);
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+.contenedor .bloque.activo {
+  opacity: 1;
+  -webkit-transform: translateY(0%);
+          transform: translateY(0%);
+}
+
+input[type="text"] {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+
+input[type="number"] {
+  width: 95%;
+  padding: 5px;
+  margin: 5px 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+input[type="submit"] {
+  background-color: #5d615a;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type="submit"]:hover {
+  background-color: #555;
+}
+
+.cmb{
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+
+.form-row{
+	width: 100%;
+}
+.column-half, .column-full{
+	float: left;
+	position: relative;
+	padding: 0.65rem;
+	width:100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box
+}
+
+.titulo{  
+  color:cadetblue;
+  display:flex;
+  margin-left: 4em;
+  }
+    </style>
+</head>
+<body> 
+
+    <div class="contenedor_ppal">
+        <div class="titulo"> 
+            <!--class="font-effect-shadow-multiple"-->           
+            <h1 >  Mantenimiento de Montacarga </h1>
+            <img src="img\icon64.png" alt="Modelos" style="width: auto;">            
+        </div>
+        <br>      
+        <div class="contenedor">                       
+            <ul class="ul">
+                <li class="li activo">
+                    <img src="img\ia32.png" alt="Modelos" style="width:auto;"><span>    Ingresar Datos</span>             
+                </li>                
+                <li class="li">
+                    <img src="img\robot32.png" style="width:auto;">
+                    <p id="menu">  Modelo Ingresar Datos</p>
+                </li>
+                <li class="li">
+                    <img src="img\process32.png" style="width:auto;">
+                    Boton 3
+                </li>
+            </ul>
+
+            <div class="subcontenedor">
+                <div class="bloque activo">
+                    
+                    <div class="formulario">
+                        <h2>Seleccione las opciones para la predicción del mantenimiento</h2>
+                        <form id="form-prediccion" action="/prediccion" method="post">
+                            <label for="maquina">Maquina:</label>
+                            <select name="maquina" id="maquina">
+                                <option value='AE 131'>AE 131</option>
+                                <option value='AE 154'>AE 154</option>
+                                <option value='AE 155'>AE 155</option>
+                                <option value='AE 159'>AE 159</option>
+                                <option value='AE 68'>AE 68</option>
+                                <option value='B01'>B01</option>
+                                <option value='B02'>B02</option>
+                                <option value='B03'>B03</option>
+                                <option value='B04'>B04</option>
+                                <option value='B05'>B05</option>
+                                <option value='B06'>B06</option>
+                                <option value='B07'>B07</option>
+                                <option value='B08'>B08</option>
+                                <option value='B09'>B09</option>
+                                <option value='B10'>B10</option>
+                                <option value='B11'>B11</option>
+                                <option value='B12'>B12</option>
+                                <option value='B13'>B13</option>
+                                <option value='B14'>B14</option>
+                                <option value='B15'>B15</option>
+                                <option value='B16'>B16</option>
+                                <option value='B17'>B17</option>
+                                <option value='B18'>B18</option>
+                                <option value='B19'>B19</option>
+                                <option value='B20'>B20</option>
+                                <option value='B21'>B21</option>
+                                <option value='B22'>B22</option>
+                                <option value='B25'>B25</option>
+                                <option value='B29'>B29</option>
+                                <option value='B30'>B30</option>
+                                <option value='B31'>B31</option>
+                                <option value='B32'>B32</option>
+                                <option value='B33'>B33</option>
+                                <option value='B34'>B34</option>
+                                <option value='B35'>B35</option>
+                                <option value='B36'>B36</option>
+                                <option value='B37'>B37</option>
+                                <option value='B41'>B41</option>
+                                <option value='B44'>B44</option>
+                                <option value='B45'>B45</option>
+                                <option value='B46'>B46</option>
+                                <option value='B47'>B47</option>
+                                <option value='B48'>B48</option>
+                                <option value='B49'>B49</option>
+                                <option value='B50'>B50</option>
+                                <option value='B51'>B51</option>
+                                <option value='B53'>B53</option>
+                                <option value='B54'>B54</option>
+                                <option value='B56'>B56</option>
+                                <option value='B57'>B57</option>
+                                <option value='B58'>B58</option>
+                                <option value='B59'>B59</option>
+                                <option value='B60'>B60</option>
+                                <option value='B61'>B61</option>
+                                <option value='B62'>B62</option>
+                                <option value='B63'>B63</option>
+                                <option value='B64'>B64</option>
+                                <option value='B65'>B65</option>
+                                <option value='B66'>B66</option>
+                                <option value='B67'>B67</option>
+                                <option value='B68'>B68</option>
+                                <option value='B69'>B69</option>
+                                <option value='B70'>B70</option>
+                                <option value='B71'>B71</option>
+                                <option value='B72'>B72</option>
+                                <option value='B73'>B73</option>
+                                <option value='B74'>B74</option>
+                                <option value='B75'>B75</option>
+                                <option value='B76'>B76</option>
+                                <option value='B77'>B77</option>
+                                <option value='B78'>B78</option>
+                                <option value='B79'>B79</option>
+                                <option value='B80'>B80</option>
+                                <option value='B81'>B81</option>
+                                <option value='B82'>B82</option>
+                                <option value='B83'>B83</option>
+                                <option value='B84'>B84</option>
+                                <option value='B85'>B85</option>
+                                <option value='B86'>B86</option>
+                                <option value='B87'>B87</option>
+                                <option value='B88'>B88</option>
+                                <option value='B89'>B89</option>
+                                <option value='B90'>B90</option>
+                                <option value='B91'>B91</option>
+                                <option value='BALE CLAMP 1'>BALE CLAMP 1</option>
+                                <option value='BALE CLAMP 2'>BALE CLAMP 2</option>
+                                <option value='BALE CLAMP 3'>BALE CLAMP 3</option>
+                                <option value='BALE CLAMP 5'>BALE CLAMP 5</option>
+                                <option value='CB01'>CB01</option>
+                                <option value='CB02'>CB02</option>
+                                <option value='CB03'>CB03</option>
+                                <option value='CB04'>CB04</option>
+                                <option value='CB05'>CB05</option>
+                                <option value='CB06'>CB06</option>
+                                <option value='CB07'>CB07</option>
+                                <option value='CB08'>CB08</option>
+                                <option value='CB09'>CB09</option>
+                                <option value='CB12'>CB12</option>
+                                <option value='CB13'>CB13</option>
+                                <option value='CB14'>CB14</option>
+                                <option value='CB15'>CB15</option>
+                                <option value='CB16'>CB16</option>
+                                <option value='CB17'>CB17</option>
+                                <option value='CB19'>CB19</option>
+                                <option value='CB20'>CB20</option>
+                                <option value='CB22'>CB22</option>
+                                <option value='CB23'>CB23</option>
+                                <option value='CB24'>CB24</option>
+                                <option value='CB25'>CB25</option>
+                                <option value='CB30'>CB30</option>
+                                <option value='CB33'>CB33</option>
+                                <option value='CE 126'>CE 126</option>
+                                <option value='CE1'>CE1</option>
+                                <option value='CE2'>CE2</option>
+                                <option value='CE3'>CE3</option>
+                                <option value='CE4'>CE4</option>
+                                <option value='EE 100'>EE 100</option>
+                                <option value='EE 144'>EE 144</option>
+                                <option value='EE 145'>EE 145</option>
+                                <option value='EE 33'>EE 33</option>
+                                <option value='EE 61'>EE 61</option>
+                                <option value='EE 62'>EE 62</option>
+                                <option value='EE 66'>EE 66</option>
+                                <option value='EE 67'>EE 67</option>
+                                <option value='EE 71'>EE 71</option>
+                                <option value='EE 73'>EE 73</option>
+                                <option value='EE 74'>EE 74</option>
+                                <option value='EE 75'>EE 75</option>
+                                <option value='EE 89'>EE 89</option>
+                                <option value='EE 95'>EE 95</option>
+                                <option value='EE 96'>EE 96</option>
+                                <option value='EE 99'>EE 99</option>
+                                <option value='ES 116'>ES 116</option>
+                                <option value='ES 117'>ES 117</option>
+                                <option value='ES 118'>ES 118</option>
+                                <option value='ES 119'>ES 119</option>
+                                <option value='ES 58'>ES 58</option>
+                                <option value='ES 80'>ES 80</option>
+                                <option value='ES 91'>ES 91</option>
+                                <option value='ES 92'>ES 92</option>
+                                <option value='ES 93'>ES 93</option>
+                                <option value='ES 94'>ES 94</option>
+                                <option value='ESTIBADOR P&G'>ESTIBADOR P&G</option>
+                                <option value='IB01'>IB01</option>
+                                <option value='IB02'>IB02</option>
+                                <option value='MC 101'>MC 101</option>
+                                <option value='MC 102'>MC 102</option>
+                                <option value='MC 103'>MC 103</option>
+                                <option value='MC 108'>MC 108</option>
+                                <option value='MC 109'>MC 109</option>
+                                <option value='MC 110'>MC 110</option>
+                                <option value='MC 111'>MC 111</option>
+                                <option value='MC 112'>MC 112</option>
+                                <option value='MC 113'>MC 113</option>
+                                <option value='MC 114'>MC 114</option>
+                                <option value='MC 115'>MC 115</option>
+                                <option value='MC 120'>MC 120</option>
+                                <option value='MC 121'>MC 121</option>
+                                <option value='MC 123'>MC 123</option>
+                                <option value='MC 124'>MC 124</option>
+                                <option value='MC 125'>MC 125</option>
+                                <option value='MC 127'>MC 127</option>
+                                <option value='MC 128'>MC 128</option>
+                                <option value='MC 130'>MC 130</option>
+                                <option value='MC 132'>MC 132</option>
+                                <option value='MC 145'>MC 145</option>
+                                <option value='MC 151'>MC 151</option>
+                                <option value='MC 152'>MC 152</option>
+                                <option value='MC 156'>MC 156</option>
+                                <option value='MC 157'>MC 157</option>
+                                <option value='MC 158'>MC 158</option>
+                                <option value='MC 41'>MC 41</option>
+                                <option value='MC 42'>MC 42</option>
+                                <option value='MC 43 '>MC 43 </option>
+                                <option value='MC 44'>MC 44</option>
+                                <option value='MC 45'>MC 45</option>
+                                <option value='MC 46'>MC 46</option>
+                                <option value='MC 47'>MC 47</option>
+                                <option value='MC 48'>MC 48</option>
+                                <option value='MC 49'>MC 49</option>
+                                <option value='MC 50'>MC 50</option>
+                                <option value='MC 51'>MC 51</option>
+                                <option value='MC 52'>MC 52</option>
+                                <option value='MC 53'>MC 53</option>
+                                <option value='MC 54'>MC 54</option>
+                                <option value='MC 55'>MC 55</option>
+                                <option value='MC 56'>MC 56</option>
+                                <option value='MC 57'>MC 57</option>
+                                <option value='MC 59'>MC 59</option>
+                                <option value='MC 69'>MC 69</option>
+                                <option value='MC 70'>MC 70</option>
+                                <option value='MC 72'>MC 72</option>
+                                <option value='MC 76'>MC 76</option>
+                                <option value='MC 77'>MC 77</option>
+                                <option value='MC 78'>MC 78</option>
+                                <option value='MC 79'>MC 79</option>
+                                <option value='MC 81'>MC 81</option>
+                                <option value='MC 82'>MC 82</option>
+                                <option value='MC 83'>MC 83</option>
+                                <option value='MC 84'>MC 84</option>
+                                <option value='MC 85'>MC 85</option>
+                                <option value='MC 86'>MC 86</option>
+                                <option value='MC 87'>MC 87</option>
+                                <option value='MC 88'>MC 88</option>
+                                <option value='MC 90'>MC 90</option>
+                                <option value='MC 97'>MC 97</option>
+                                <option value='MC 98'>MC 98</option>
+                                <option value='MC55'>MC55</option>
+                                <option value='ME 105'>ME 105</option>
+                                <option value='ME 133'>ME 133</option>
+                                <option value='ME 134'>ME 134</option>
+                                <option value='ME 135'>ME 135</option>
+                                <option value='ME 136'>ME 136</option>
+                                <option value='ME 137'>ME 137</option>
+                                <option value='ME 138'>ME 138</option>
+                                <option value='ME 139'>ME 139</option>
+                                <option value='ME 140'>ME 140</option>
+                                <option value='ME 141'>ME 141</option>
+                                <option value='ME 142'>ME 142</option>
+                                <option value='ME 143'>ME 143</option>
+                                <option value='ME 147'>ME 147</option>
+                                <option value='ME 148'>ME 148</option>
+                                <option value='ME 149'>ME 149</option>
+                                <option value='ME 150'>ME 150</option>
+                                <option value='ME 34'>ME 34</option>
+                                <option value='ME 40'>ME 40</option>
+                                <option value='ME 63'>ME 63</option>
+                                <option value='ME 65'>ME 65</option>
+                                <option value='OP 146'>OP 146</option>
+                                <option value='OP 153'>OP 153</option>
+                                <option value='ROLL CLAMP 1'>ROLL CLAMP 1</option>
+                                <option value='ROLL CLAMP 2'>ROLL CLAMP 2</option>
+                                <option value='ROLL CLAMP 3'>ROLL CLAMP 3</option>
+                                <option value='ROLL CLAMP 4'>ROLL CLAMP 4</option>
+                                <option value='SC 122'>SC 122</option>
+                                <option value='SP 129'>SP 129</option>
+
+
+                            </select><br/><br/>                
+                
+                            <label for="ano">Año:</label>
+                            <select name="ano" id="ano">
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select><br/><br/>
+                
+                            <label for="mes">Mes:</label>
+                            <select name="mes" id="mes">
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select><br/><br/>
+
+                            <label for="dia">Día:</label>
+                            <input type="number" name="dia" id="dia" min="1" max="30" required>
+                            <br/><br/>
+
+                            <label for="lugar_operacion">Lugar de Operación:</label>
+                            <select name="lugar_operacion" id="lugar_operacion">
+                                <option value=' - ALSEC'> - ALSEC</option>
+                                <option value=' - ANDERCOL'> - ANDERCOL</option>
+                                <option value=' - COMMERK'> - COMMERK</option>
+                                <option value=' - ITALCOL'> - ITALCOL</option>
+                                <option value=' - SC RECYCLING'> - SC RECYCLING</option>
+                                <option value=' - SIKA'> - SIKA</option>
+                                <option value=' - SOFASA'> - SOFASA</option>
+                                <option value=' - SUMIFRIO'> - SUMIFRIO</option>
+                                <option value=' - SUMMAR BAVARIA'> - SUMMAR BAVARIA</option>
+                                <option value=' - SUPPLA ITAGUI'> - SUPPLA ITAGUI</option>
+                                <option value=' - SUPPLA NIQUIA'> - SUPPLA NIQUIA</option>
+                                <option value=' - TANN COLOMBIANA S.A.S'> - TANN COLOMBIANA S.A.S</option>
+                                <option value=' - THE POTTERY PATCH COLOMBIA'> - THE POTTERY PATCH COLOMBIA</option>
+                                <option value=' - TUNEL DE ORIENTE'> - TUNEL DE ORIENTE</option>
+                                <option value=' - VIAPPIANI'> - VIAPPIANI</option>
+                                <option value='01-00 - PAPELSA SA'>01-00 - PAPELSA SA</option>
+                                <option value='02-00 - PROCTER & GAMBLE  COLOMBIA LTDA.'>02-00 - PROCTER & GAMBLE  COLOMBIA LTDA.</option>
+                                <option value='03-00 - SOFASA SMYM LOGISTICA S.A.S - PERSONAL LOGISTICO'>03-00 - SOFASA SMYM LOGISTICA S.A.S - PERSONAL LOGISTICO</option>
+                                <option value='04-00 - SOFASA SMYM LOGISTICA S.A.S - ARRENDAMIENTO MAQUINAS'>04-00 - SOFASA SMYM LOGISTICA S.A.S - ARRENDAMIENTO MAQUINAS</option>
+                                <option value='05-00 - COOPERATIVA COLANTA '>05-00 - COOPERATIVA COLANTA </option>
+                                <option value='05-01 - COLANTA CARIBE'>05-01 - COLANTA CARIBE</option>
+                                <option value='05-02 - COLANTA SAN PEDRO'>05-02 - COLANTA SAN PEDRO</option>
+                                <option value='05-03 - COLANTA SANTA ROSA'>05-03 - COLANTA SANTA ROSA</option>
+                                <option value='05-04 - COLANTA CONCENTRADOS ITAGÜÍ'>05-04 - COLANTA CONCENTRADOS ITAGÜÍ</option>
+                                <option value='06-00 - COLANTA - CARIBE'>06-00 - COLANTA - CARIBE</option>
+                                <option value='07-00 - COLANTA SANTA ROSA - FRIGO COLANTA'>07-00 - COLANTA SANTA ROSA - FRIGO COLANTA</option>
+                                <option value='08-00 - RENAULT SOFASA S.A.S - DECAPADO'>08-00 - RENAULT SOFASA S.A.S - DECAPADO</option>
+                                <option value='10-00 - COODESIVAL'>10-00 - COODESIVAL</option>
+                                <option value='11-00 - COLHILADOS'>11-00 - COLHILADOS</option>
+                                <option value='12-00 - FANALCA'>12-00 - FANALCA</option>
+                                <option value='13-00 - PLASTIQUIMICA'>13-00 - PLASTIQUIMICA</option>
+                                <option value='14-00 - UNION MEDICAL S.A.S'>14-00 - UNION MEDICAL S.A.S</option>
+                                <option value='15-00 - PETPACK SAS'>15-00 - PETPACK SAS</option>
+                                <option value='16-00 - COMPRE S.A.S'>16-00 - COMPRE S.A.S</option>
+                                <option value='17-00 - ATICA - INDUSTRIA AMBIENTAL SAS'>17-00 - ATICA - INDUSTRIA AMBIENTAL SAS</option>
+                                <option value='17-01 - ATICA - INDUSTRIA AMBIENTAL KOBA NORTE'>17-01 - ATICA - INDUSTRIA AMBIENTAL KOBA NORTE</option>
+                                <option value='17-02 - ATICA - INDUSTRIA AMBIENTAL KOBA SUR'>17-02 - ATICA - INDUSTRIA AMBIENTAL KOBA SUR</option>
+                                <option value='17-03 - ATICA - INDUSTRIA AMBIENTAL PEPSICO'>17-03 - ATICA - INDUSTRIA AMBIENTAL PEPSICO</option>
+                                <option value='17-04 - ATICA - INDUSTRIA AMBIENTAL AUTECO ITAGÜÍ'>17-04 - ATICA - INDUSTRIA AMBIENTAL AUTECO ITAGÜÍ</option>
+                                <option value='17-05 - ATICA - INDUSTRIA AMBIENTAL AUTECO RIONEGRO'>17-05 - ATICA - INDUSTRIA AMBIENTAL AUTECO RIONEGRO</option>
+                                <option value='18-00 - SUPPLA'>18-00 - SUPPLA</option>
+                                <option value='18-01 - SUPPLA ESTRELLA'>18-01 - SUPPLA ESTRELLA</option>
+                                <option value='18-02 - SUPPLA OLAYA'>18-02 - SUPPLA OLAYA</option>
+                                <option value='18-03 - SUPPLA LA FLA ESTRELLA'>18-03 - SUPPLA LA FLA ESTRELLA</option>
+                                <option value='18-04 - SUPPLA LA FLA GIRARDOTA'>18-04 - SUPPLA LA FLA GIRARDOTA</option>
+                                <option value='19-00 - C.I NUTREO S.A.S'>19-00 - C.I NUTREO S.A.S</option>
+                                <option value='20-00 - FRUTINAL SAS'>20-00 - FRUTINAL SAS</option>
+                                <option value='21-00 - SUPLACOL'>21-00 - SUPLACOL</option>
+                                <option value='22-00 - TALLER'>22-00 - TALLER</option>
+                                <option value='33-00 - FABRICATO'>33-00 - FABRICATO</option>
+                                <option value='35-00 - QUIMINCOL'>35-00 - QUIMINCOL</option>
+                                <option value='36-00 - MOTOBORDA S.A.S.'>36-00 - MOTOBORDA S.A.S.</option>
+                                <option value='37-00 - PRODUCTOS FAMILIA RIONEGRO S.A.S'>37-00 - PRODUCTOS FAMILIA RIONEGRO S.A.S</option>
+                                <option value='37-01 - PRODUCTOS FAMILIA GUAYABAL'>37-01 - PRODUCTOS FAMILIA GUAYABAL</option>
+                                <option value='38-00 - SM TRANSPORTES S.A.S'>38-00 - SM TRANSPORTES S.A.S</option>
+                                <option value='39-00 - COLANTA SAN PEDRO'>39-00 - COLANTA SAN PEDRO</option>
+                                <option value='40-00 - DISTOYOTA S.A.S'>40-00 - DISTOYOTA S.A.S</option>
+                                <option value='45-00 - LA TIENDA DEL TRIPLEX S.A.S'>45-00 - LA TIENDA DEL TRIPLEX S.A.S</option>
+                                <option value='46-00 - AUTECO MOBILITY S.A.S'>46-00 - AUTECO MOBILITY S.A.S</option>
+                                <option value='47-00 - COLDEPLAST S.A.S'>47-00 - COLDEPLAST S.A.S</option>
+                                <option value='53-00 - CASALUKER S.A'>53-00 - CASALUKER S.A</option>
+                                <option value='54-00 - PUNTO LOGISTICO GLOBAL S.A.S'>54-00 - PUNTO LOGISTICO GLOBAL S.A.S</option>
+                                <option value='55-00 - POSTOBON BELLO'>55-00 - POSTOBON BELLO</option>
+                                <option value='55-01 - POSTOBON GUAYABAL'>55-01 - POSTOBON GUAYABAL</option>
+                                <option value='56-00 - GEOSFERA SERVIENTREGA'>56-00 - GEOSFERA SERVIENTREGA</option>
+                                <option value='56-01 - GEOSFERA NACIONAL DE CHOCOLATES'>56-01 - GEOSFERA NACIONAL DE CHOCOLATES</option>
+                                <option value='57-00 - LANDERS'>57-00 - LANDERS</option>
+                                <option value='58-00 - SU CONSTRUCCION'>58-00 - SU CONSTRUCCION</option>
+                                <option value='59-00 - CONSTRUCTORA CONCONCRETO'>59-00 - CONSTRUCTORA CONCONCRETO</option>
+                                <option value='60-00 - BIMBO'>60-00 - BIMBO</option>
+                                <option value='61-00 - ARTEXTIL'>61-00 - ARTEXTIL</option>
+                                <option value='62-00 - AGIL CARGO SAS'>62-00 - AGIL CARGO SAS</option>
+                                <option value='63-00 - MANE SUCURSAL COLOMBIA'>63-00 - MANE SUCURSAL COLOMBIA</option>
+                                <option value='64-00 - ALPOPULAR S.A'>64-00 - ALPOPULAR S.A</option>
+                                <option value='64-01 - ALPOPULAR S.A LA ESTRELLA'>64-01 - ALPOPULAR S.A LA ESTRELLA</option>
+                                <option value='64-02 - ALPOPULAR S.A ITAGUI'>64-02 - ALPOPULAR S.A ITAGUI</option>
+                                <option value='65-00 - RACAFÉ & CIA S C A'>65-00 - RACAFÉ & CIA S C A</option>
+                                <option value='66-00 - INDUSTRIAS ALIMENTICIAS PERMAN S.A'>66-00 - INDUSTRIAS ALIMENTICIAS PERMAN S.A</option>
+                                <option value='68-00 - LACTEOS EL ZARZAL SAN PEDRO'>68-00 - LACTEOS EL ZARZAL SAN PEDRO</option>
+                                <option value='68-01 - LACTEOS EL ZARZAL CARIBE'>68-01 - LACTEOS EL ZARZAL CARIBE</option>
+                                <option value='70-00 - PINTUBARS S.A.S'>70-00 - PINTUBARS S.A.S</option>
+                                <option value='71-00 - ICESTAR COLOMBIA SAS'>71-00 - ICESTAR COLOMBIA SAS</option>
+                                <option value='72-00 - VELOCES'>72-00 - VELOCES</option>
+                                <option value='73-00 - PRODUCTOS QUIMICOS PANAMERICANOS S A'>73-00 - PRODUCTOS QUIMICOS PANAMERICANOS S A</option>
+                                <option value='74-00 - LUISA CHIMA S.A.S'>74-00 - LUISA CHIMA S.A.S</option>
+                                <option value='75-00 - DISTRIBUCIONES DE PRODUCTOS FULL SA'>75-00 - DISTRIBUCIONES DE PRODUCTOS FULL SA</option>
+                                <option value='76-00 - INTEGRAMOS LOGISTICA S.A.S'>76-00 - INTEGRAMOS LOGISTICA S.A.S</option>
+                                <option value='77-01 - COMMERK ITAGUI'>77-01 - COMMERK ITAGUI</option>
+
+                            </select><br/><br/>
+                
+                            <button type="submit">Consultar</button>
+                        </form>
+                        <div id="resultado" style="margin-top: 20px; font-size: 18px;"></div>
+                    </div>
+                
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        // Manejo del envío del formulario y solicitud al servidor
+                        $(document).ready(function() {
+                            $('#form-prediccion').submit(function(event) {
+                                event.preventDefault(); // Prevenir el envío estándar del formulario
+                
+                                // Serializar los datos del formulario
+                                var formData = $(this).serialize();
+                
+                                // Realizar la solicitud AJAX
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/prediccion',
+                                    data: formData,
+                                    success: function(response) {
+                                        if (response.prediccion) {
+                                            // Mostrar el resultado en el contenedor
+                                            $('#resultado').html(`<b>Predicción GWh:</b> ${response.prediccion}`);
+                                        } else if (response.error) {
+                                            // Mostrar error si ocurre
+                                            $('#resultado').html(`<b>Error:</b> ${response.error}`);
+                                        } else {
+                                            // Manejo genérico si no hay resultados
+                                            $('#resultado').html("No se encontraron resultados para la consulta.");
+                                        }
+                                    },
+                                    error: function() {
+                                        // Manejo del error de conexión
+                                        $('#resultado').html("Ocurrió un error al procesar la solicitud.");
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                <div class="bloque">                 
+                    <h2>Introduce los valores</h2>    
+                    <form action="/" method="post">
+                        <div class="column-half">
+                        Petal width: <input type="number" step="any" name="val1" required ><br>
+                        Petal length: <input type="number" step="any" name="val2" required><br>
+                        Sepal width: <input type="number" step="any" name="val3" required><br>
+                        Sepal length: <input type="number" step="any" name="val4" required><br>
+                        <input type="submit" value="Predict" >
+                    </div>
+                    </form>
+
+
+                </div>
+                <div class="bloque">Prueba<br>
+                    
+                </div>
+            </div>
+        </div>
+    </div> 
+
+
+</body>
+<script>
+    'use strict'
+
+const li        = document.querySelectorAll('.li')
+const bloque    = document.querySelectorAll('.bloque')
+
+// CLICK en li
+    // TODOS .li quitar la clase activo
+    // TODOS .bloque quitar la clase activo
+    // .li con la posicion se añadimos la clase activo
+    // .bloque con la posicion se añadimos la clase activo
+
+// Recorriendo todos los LI
+li.forEach( ( cadaLi , i )=>{
+    // Asignando un CLICK a CADALI
+    li[i].addEventListener('click',()=>{
+
+        // Recorrer TODOS los .li
+        li.forEach( ( cadaLi , i )=>{
+            // Quitando la clase activo de cada li
+            li[i].classList.remove('activo')
+            // Quitando la clase activo de cada bloque
+            bloque[i].classList.remove('activo')
+        })
+
+        // En el li que hemos click le añadimos la clase activo
+        li[i].classList.add('activo')
+        // En el bloque con la misma posición le añadimos la clase activo
+        bloque[i].classList.add('activo')
+
+    })
+})
+</script>
+</html>
